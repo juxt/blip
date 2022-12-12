@@ -1,5 +1,6 @@
 # blip
 
+Small library for fetching/injecting graphql definitions
 
 FIXME: my new library.
 
