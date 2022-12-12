@@ -1,3 +1,3 @@
-# Introduction to injectql.main
+# Introduction to blip
 
 TODO: write [great documentation](http://jacobian.org/writing/what-to-write/)
