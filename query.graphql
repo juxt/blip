@@ -1,0 +1,924 @@
+mutation CreateQuestionnaire (
+  $questionnaire: QuestionnaireInput!
+  $questionnaireQuestions: [QuestionnaireQuestionInput!]!
+  $dependencies: [DependencyInput!]
+  ) {
+    createQuestionnaire(questionnaire: $questionnaire) {
+      id
+      description
+      title
+      questionnaireQuestions {
+        id
+      }
+    }
+    createQuestionnaireQuestions(questionnaireQuestions: $questionnaireQuestions) {
+      id
+    }
+    createDependencies(dependencies: $dependencies) {
+      id
+    }
+}
+
+query AllDependencies {
+  dependencies {
+    id
+    answers { id }
+  }
+}
+
+query DependenciesForQuestionnaire($questionnaireId: ID!) {
+  dependenciesForQuestionnaire(id: $questionnaireId) {
+    questionnaireQuestions {
+      id
+      order
+      outgoingDependencies {
+        from {
+          question {
+            id
+          }
+        }
+        constraint
+        to {
+          question {
+            id
+          }
+        }
+        answers {
+          id
+          title
+        }
+      }
+    }
+  }
+}
+
+query AllQuestionnaires {
+  questionnaires {
+    id
+  }
+}
+
+query QuestionnaireQuestions {
+  questionnaireQuestions {
+    id
+  }
+}
+
+query Questionnaires {
+  questionnaires {
+    description
+    id
+    title
+    tags
+    questionnaireQuestions {
+      id
+      order
+      incomingDependencies {
+        constraint
+        id
+        to {
+          id
+        }
+        from {
+          id
+          question {
+            questionType
+          }
+        }
+        answers {
+          id
+          answerType
+          title
+          value
+          answerQuestion { id }
+          description
+          value
+        }
+      }
+        outgoingDependencies {
+        constraint
+        id
+        from {
+          id
+        }
+        to {
+          id
+        }
+        answers {
+          id
+          answerType
+          title
+          description
+          answerQuestion { id }
+          dependencies { id }
+          value
+        }
+      }
+      question {
+        id
+        description
+        questionType
+          title
+        associatedTags
+        attribute {
+          id
+          label
+          value
+        }
+        domain
+        answers {
+          answerQuestion { id }
+          answerType
+          description
+          id
+          value
+          title
+        }
+      }
+    }
+  }
+}
+
+query Questionnaire($questionnaire: ID!) {
+  questionnaire(id: $questionnaire) {
+    description
+    id
+    title
+    tags
+    questionnaireQuestions {
+      id
+      order
+      incomingDependencies {
+        constraint
+        id
+        to {
+          id
+        }
+        from {
+          id
+        }
+        answers {
+          id
+          answerType
+          title
+          value
+          description
+          value
+        }
+      }
+      outgoingDependencies {
+        constraint
+        id
+        from {
+          id
+        }
+        to {
+          id
+        }
+        answers {
+          id
+          answerType
+          title
+          description
+          dependencies { id }
+          value
+        }
+      }
+      question {
+        id
+        description
+        questionType
+        title
+        associatedTags
+        attribute {
+          id
+          label
+          value
+        }
+        domain
+        answers {
+          answerType
+          description
+          id
+          value
+          title
+        }
+      }
+    }
+  }
+}
+
+mutation DeleteQuestionnaireQuestion($id: ID!) {
+  deleteQuestionnaireQuestion(id: $id) {
+    id
+  }
+}
+
+query CompilerQuery($id: ID!) {
+  compilerQuery(id: $id) {
+    __typename
+    id
+    firstName
+    lastName
+    userInstances {
+      __typename
+      id
+      instanceAnswers {
+        id
+        answerValue
+        __typename
+        answer {
+          id
+          description
+        }
+      }
+      questionnaire {
+        __typename
+        id
+        description
+        _siteValidTime
+        _siteSubject
+        title
+        questionnaireQuestions {
+          __typename
+          id
+          question {
+            description
+            questionType
+            questionConstraint
+            questionEffect
+            attribute {
+              __typename
+              id
+              label
+              value
+              }
+            associatedTags
+            title
+            domain
+            __typename
+            id
+            answers {
+              answerType
+              description
+              __typename
+              id
+              title
+              value
+              instanceAnswers {
+                answerValue
+                __typename
+                id
+                selected
+                instance { id }
+                answer { description }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation DeleteQuestionnaire($id: ID!) {
+  deleteQuestionnaire(id: $id) {
+    id
+  }
+}
+
+query AllQuestions {
+  questions {
+    id
+  }
+}
+
+query AllAnswers {
+  answers {
+    id
+  }
+}
+
+query Question($question: ID!) {
+  question(id: $question) {
+    id
+    title
+    questionType
+    questionConstraint
+    questionEffect
+    description
+    associatedTags
+    attribute {
+      id
+      label
+      value
+      domain
+      attributeType
+      options
+    }
+    domain
+    answers {
+      id
+      title
+      description
+      answerType
+      value
+    }
+  }
+}
+
+mutation CreateQuestion (
+  $question: QuestionInput!
+  ) {
+  createQuestion(question: $question) {
+    id
+    title
+    questionType
+    questionConstraint
+    questionEffect
+    description
+    associatedTags
+    attribute {
+      id
+    }
+    domain
+    answers {
+      id
+    }
+  }
+}
+
+mutation CreateQuestions (
+  $questions: [QuestionInput!]!
+  ) {
+    createQuestions(questions: $questions) {
+      id
+      title
+      questionType
+      description
+      associatedTags
+      attribute { id }
+      domain
+    }
+}
+
+query Questions {
+  questions {
+    id
+    title
+    description
+    questionType
+    associatedTags
+    attribute {
+      id
+      label
+      value
+      }
+    domain
+    answers {
+      id
+      title
+      description
+      answerType
+      answerQuestion { id }
+      dependencies { id }
+      value
+    }
+  }
+}
+
+mutation DeleteQuestion($id: ID!) {
+  deleteQuestion(id: $id) {
+    id
+  }
+}
+
+mutation DeleteAnswer($id: ID!) {
+  deleteAnswer(id: $id) {
+    id
+  }
+}
+
+mutation CreateAnswers (
+  $answers: [AnswerInput!]!
+) {
+  createAnswers(answers: $answers) {
+    id
+    title
+    description
+    answerType
+    value
+  }
+}
+
+query AnswersForQuestionnaire ($questionnaireId: ID!) {
+  answersForQuestionnaire(id: $questionnaireId) {
+    id
+    instances {
+      instanceAnswers {
+        answerValue
+        id
+        selected
+        instance {
+          user {
+            id
+          }
+        }
+      }
+      _siteValidTime
+      id
+    }
+  }
+}
+
+mutation UpdateAnswer($answerId: ID!, $answer: AnswerInput) {
+  updateAnswer(id: $answerId, answer: $answer) { id }
+}
+
+mutation UpdateQuestion($questionId: ID!, $question: QuestionInput) {
+  updateQuestion(id: $questionId, question: $question) { id }
+}
+
+query questionnaireHistory($questionnaireId: ID!, $historical: Boolean) {
+  questionnaireHistory(id: $questionnaireId, limit: 50, offset: 0, historicalDb: $historical) {
+    _siteValidTime
+    _siteSubject
+    id
+    title
+    description
+    questionnaireQuestions {
+      id
+      order
+      incomingDependencies {
+        id
+        from { id }
+        to { id }
+      }
+      outgoingDependencies {
+        id
+        from { id }
+        to { id }
+      }
+      question {
+        id
+        title
+        description
+      }
+    }
+  }
+}
+
+## Users
+
+query User($userId: ID!) {
+  user(id: $userId) {
+    id
+    role
+    firstName
+    lastName
+    userTags
+    userPortfolios {
+      id
+      title
+      _siteValidTime
+      productWeightings {
+        id
+        weighting
+        product {
+        id
+        name
+        group
+        themes
+        esgCategories
+        isin
+        }
+      }
+      instance { id }
+    }
+    userInstances {
+      id
+      questionnaire {
+        id
+        title
+        description
+      }
+      _siteValidTime
+    }
+  }
+}
+
+query Users {
+  users
+  {
+    id
+    role
+    firstName
+    lastName
+    userTags
+    userInstances {
+      id
+      questionnaire {
+        id
+        title
+        description
+      }
+      _siteValidTime
+    }
+    userPortfolios { id }
+  }
+}
+
+mutation DeleteUser($id: ID!) {
+  deleteUser(user: $id) {
+    id
+  }
+}
+
+mutation CreateUser ($user: UserInput!) {
+  createUser(user: $user) { id }
+}
+
+## Instance
+
+query Instances {
+  instances {
+    instanceAnswers {
+      answerValue
+      selected
+      answer {
+        title
+        description
+        answerType
+      }
+    }
+  }
+}
+
+query Instance($id: ID!) {
+  instance(id: $id) {
+    id
+    user {
+      id
+      firstName
+      lastName
+    }
+    questionnaire {
+      id
+      description
+      questionnaireQuestions {
+        id
+        order
+        question {
+          description
+          answers {
+            id
+            description
+            instanceAnswers {
+              id
+              selected
+              answerValue
+              instance { id }
+              answer {
+                description
+                answerQuestion {
+                  id
+                  description
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    instanceAnswers {
+      id
+      selected
+      answerValue
+      answer {
+        description
+        answerQuestion {
+          id
+          description
+        }
+      }
+    }
+  }
+}
+
+mutation CreateInstance (
+  $instance: InstanceInput!
+  $instanceAnswers: [InstanceAnswerInput!]!
+) {
+  createInstance(instance: $instance) {
+    id
+    user {
+      id
+      firstName
+      lastName
+    }
+    questionnaire {
+      id
+      title
+    }
+    instanceAnswers {
+      id
+    }
+  }
+  createInstanceAnswers(instanceAnswers: $instanceAnswers) { id }
+}
+
+mutation DeleteInstance ($id: ID!) {
+  deleteInstance(id: $id) {
+    id
+  }
+}
+
+mutation UpdateDependency($dependencyId: ID!, $dependency: DependencyInput) {
+  updateDependency(id: $dependencyId, dependency: $dependency) { id }
+}
+
+mutation DeleteDependency ($id: ID!) {
+  deleteDependency(id: $id) {
+    id
+  }
+}
+
+mutation UpdateInstance($instanceId: ID!, $instance: InstanceInput) {
+  updateInstance(id: $instanceId, instance: $instance) { id }
+}
+
+query InstanceAnswers {
+  instanceAnswers {
+    id
+  }
+}
+
+query InstanceAnswer($id: ID!) {
+  instanceAnswer(id: $id) {
+    id
+  }
+}
+
+mutation DeleteInstanceAnswer ($id: ID!) {
+  deleteInstanceAnswer(id: $id) {
+    id
+  }
+}
+
+
+## Products
+
+mutation CreateProducts (
+  $products: [ProductInput!]!
+  ) {
+    createProducts(products: $products) { id }
+}
+
+mutation CreateProduct (
+  $product: ProductInput!
+  ) {
+  createProduct(product: $product) { id }
+}
+
+mutation UpdateProduct($productId: ID!, $product: ProductInput) {
+  updateProduct(id: $productId, product: $product) { id }
+}
+
+mutation DeleteProduct($id: ID!) {
+  deleteProduct(id: $id) {
+    id
+  }
+}
+
+query Products {
+  products {
+    allocationStyle
+    esgCategories
+    group
+    id
+    isin
+    name
+    themes
+    screenings
+    impacts
+    portfolios { id }
+  }
+}
+
+query Portfolios {
+  portfolios {
+    id
+  }
+}
+
+query Product($id: ID!) {
+  product(id: $id) {
+    allocationStyle
+    esgCategories
+    group
+    id
+    isin
+    name
+    themes
+    inPairs { id }
+    portfolios { id }
+  }
+}
+
+query EsgCatetories {
+  __type(name:"EsgCategory"){
+    name
+    enumValues{
+      name
+    }
+  }
+}
+
+## Portfolios
+
+mutation CreatePortfolio (
+  $portfolio: PortfolioInput!
+  $weightingPairs: [ProductWeightingPairInput!]!
+) {
+  createPortfolio(portfolio: $portfolio) { id }
+  createProductWeightings(productWeightings: $weightingPairs) { id weighting }
+}
+
+mutation DeletePortfolio ($id: ID!) {
+  deletePortfolio(id: $id) {
+    id
+  }
+}
+
+query Portfolio ($id: ID!) {
+  portfolio(id: $id) {
+    id
+    title
+    _siteValidTime
+    user {
+      id
+      firstName
+      lastName
+      userTags
+    }
+    products { id }
+    productWeightings {
+      id
+      weighting
+      product {
+        id
+        name
+        group
+        themes
+        esgCategories
+        isin
+      }
+    }
+  }
+}
+
+query Attributes {
+  attributes {
+    id
+    label
+    value
+    domain
+    attributeType
+    options
+    belongsToQuestions { id }
+  }
+}
+
+mutation CreateAttributes (
+  $attributes: [AttributeInput!]!
+) {
+  createAttributes(attributes: $attributes) {
+    id
+    label
+    value
+    domain
+    attributeType
+    options
+  }
+}
+
+
+mutation CreateScorecard($data: ScorecardInput) {
+  createScorecard(data: $data) {
+    id
+  }
+}
+
+mutation CreateFeedConfig($data: FeedConfigInput) {
+  createFeedConfig(data: $data) {
+    id
+  }
+}
+
+mutation CreateFeed($data: FeedInput) {
+  createFeed(data: $data) {
+    id
+    config {
+      id
+    }
+  }
+}
+
+
+
+mutation CreateTransform($data: TransformationInput) {
+  createTransform(transformation: $data) {
+    id
+    from {
+      id
+    }
+  }
+}
+
+mutation CreateTransformInstance($data: TransformationInstanceInput) {
+  createTransformInstance(data: $data) {
+    byTransform {
+      id
+    }
+    id
+    noRuns
+    from {
+      id
+    }
+    to {
+      ... on Product {
+        id
+        name
+      }
+      ... on Scorecard {
+        id
+      }
+    }
+  }
+}
+
+mutation DeleteFeed($id: ID!) {
+  deleteFeed(id: $id) {
+    id
+  }
+}
+
+mutation DeleteFeedConfig($id: ID!) {
+  deleteFeedConfig(id: $id) {
+    id
+  }
+}
+
+mutation DeleteScorecard($id: ID!) {
+  deleteScorecard(id: $id) {
+    id
+  }
+}
+
+mutation DeleteTransform($id: ID!) {
+  deleteTransform(id: $id) {
+    id
+  }
+}
+
+mutation DeleteTransformInstance($id: ID!) {
+  deleteTransformInstance(id: $id) {
+    id
+  }
+}
+
+query Transformations {
+  transformations {
+    id
+    from {
+      id
+    }
+    hasInstances {
+      id
+    }
+  }
+}
+
+query TransformationInstances {
+  transformationInstances {
+    id
+  }
+}
+
+query Scorecards {
+  scorecards {
+    id
+  }
+}
+
+query Feeds {
+  feeds {
+    id
+  }
+}
+
+query FeedConfigs {
+  feedConfigs {
+    id
+  }
+}
