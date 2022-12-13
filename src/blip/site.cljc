@@ -8,14 +8,13 @@
 (defn get-site-token
   "Retrieve the site token necessary to authorize
   all other interactions."
-  [site-auth-endpoint]
+  [{:keys [endpoint username pass] :or {username "admin" pass "admin"}:as site-auth}]
   (let [response (http/post
-                  site-auth-endpoint
+                  endpoint
                   {:headers {"content-type" "application/x-www-form-urlencoded"}
-                   :basic-auth ["admin" "admin"]
+                   :basic-auth [username pass]
                    :body "grant_type=client_credentials"})
-        #?@(:clj [body (cheshire/parse-string (:body response))]
-            :cljs [body (js->clj (.parse js/JSON (:body response)))])
+        body #?(:clj (cheshire/parse-string (:body response))
+                :cljs (js->clj (.parse js/JSON (:body response))))
         access-token (get body "access_token")]
     access-token))
-
