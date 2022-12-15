@@ -57,15 +57,17 @@
            (-> file-name node-slurp string/split-lines)))
 
 (defmethod get-query-definition :remote
-  [file-name site-auth-endpoint]
-  (-> file-name (get-request :site-auth site-auth-endpoint) :body string/split-lines))
+  [file-name site-auth]
+  (-> file-name (get-request :site-auth site-auth) :body string/split-lines))
 
 ;; Public API
 
 (defn load-queries
-  ""
-  [file-name site-auth-endpoint]
-  (->> (get-query-definition file-name site-auth-endpoint)
+  "Given graphql resource handle and site-auth map, fetches graphql resource and returns map
+  with string keys constructed from graphql query/mutation names prefixed by definition type
+  (query or mutation) and values bound to full query/mutation definition as a string`"
+  [file-name site-auth]
+  (->> (get-query-definition file-name site-auth)
        (remove empty?)
        (partition-by type-name)
        (partition 2)
@@ -75,17 +77,27 @@
                  (apply str (conj body head))})))
        (apply merge)))
 
+;;TODO - this is probably too specific and doesn't belong to generic query injection library
 (defn feeds
-  ""
+  "Given site endpoint, map of query definitions (as loaded by `load-queries` fn) and (optional)
+  site auth map, performs selects `query-feeds` query and performs the data fetch against site
+  endpoint, returning `feeds` field from result."
   [site-endpoint queries & {:keys [site-auth]}]
   (-> (post-request site-endpoint
                     {:query (get queries "query-feeds")}
                     site-auth)
       (get "feeds")))
 
+;;TODO - binding vars into caller namespace can be dangerous, as generated var names (such as `query-user`)
+;; can potentially re-define existing vars in caller namespace (imagine that `query-user` is already bound
+;; to existing fn in the namespace.
+;; Safer solution would be to always inject graphql vars into dedicated library ns (such as `blip.qraphql-defs`)
 (defmacro inject!
-  "Injects vars into the caller namespace at compile time.
-  It returns the map of injected var names and their values."
+  "Given graphql resource handle (either as a name of local file, or remote URI on graphql server)
+  and optional `site-auth` map (containing `endpoint`, `username` and `pass` keys), fetches graphql
+  resource, and injects it as vars into callers namespace.
+  For each qraphql query/mutation, separate var with query/mutation name is created, value of the
+  var bound to query/mutation body."
   [file-name & {:keys [site-auth]}] 
   (let [queries (load-queries file-name site-auth)]
     (doseq [[varname body] queries]

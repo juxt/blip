@@ -6,8 +6,7 @@
             #?(:cljs [cljs.core.async :refer [<!]])))
 
 (defn get-site-token
-  "Retrieve the site token necessary to authorize
-  all other interactions."
+  "Retrieve the site token necessary to authorize all other interactions."
   [{:keys [endpoint username pass] :or {username "admin" pass "admin"} :as site-auth}]
   (let [response (http/post
                   endpoint
