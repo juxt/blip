@@ -60,17 +60,6 @@
   [file-name site-auth-endpoint]
   (-> file-name (get-request :site-auth-endpoint site-auth-endpoint) :body string/split-lines))
 
-#?(:clj (defn post-request [url body]
-          (let [response (http/post
-                          url
-                          {:body (cheshire/generate-string body)
-                           :headers {"authorization" (str "Bearer " (site/get-site-token))
-                                     "Content-Type" "application/json"}})]
-            (-> response
-                :body
-                cheshire/parse-string
-                (get "data")))))
-
 ;; Public API
 
 (defn load-queries
