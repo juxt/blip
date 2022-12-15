@@ -8,7 +8,7 @@
 (defn get-site-token
   "Retrieve the site token necessary to authorize
   all other interactions."
-  [{:keys [endpoint username pass] :or {username "admin" pass "admin"}:as site-auth}]
+  [{:keys [endpoint username pass] :or {username "admin" pass "admin"} :as site-auth}]
   (let [response (http/post
                   endpoint
                   {:headers {"content-type" "application/x-www-form-urlencoded"}
