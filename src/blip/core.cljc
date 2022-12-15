@@ -20,7 +20,7 @@
   (let [headers  (cond-> get-base-headers
                    site-auth
                    (assoc "authorization" (str "Bearer " (site/get-site-token site-auth))))]
-    (http/get url headers)))
+    (http/get url {:headers headers})))
 
 (def ^:private post-base-headers
   {"Content-Type" "application/json"})
@@ -28,7 +28,7 @@
 (defn post-request [url body & {:keys [site-auth]}]
   (let [headers  (cond-> post-base-headers
                    site-auth
-                   (assoc "authorization" (str "Bearer" (site/get-site-token site-auth))))
+                   (assoc "authorization" (str "Bearer " (site/get-site-token site-auth))))
         response (http/post
                   url
                   {:body #?(:clj (cheshire/generate-string body)
@@ -58,7 +58,7 @@
 
 (defmethod get-query-definition :remote
   [file-name site-auth-endpoint]
-  (-> file-name (get-request :site-auth-endpoint site-auth-endpoint) :body string/split-lines))
+  (-> file-name (get-request :site-auth site-auth-endpoint) :body string/split-lines))
 
 ;; Public API
 
