@@ -27,7 +27,7 @@
   and `site-auth` map to specify site authentication.
   Returns function which takes query/mutation name as a first and query-args as rest arguments
   and performs the graphql request when called."
-  [gql-queries endpoint {:keys [site-auth]}]
+  [gql-queries endpoint & {:keys [site-auth]}]
   (let [headers  {"Content-Type" "application/json"
                   "authorization" (str "Bearer " (get-site-token site-auth))}]
     (core/init gql-queries endpoint {:headers headers})))
