@@ -32,15 +32,17 @@
                   "authorization" (str "Bearer " (get-site-token site-auth))}]
     (core/init gql-queries endpoint {:headers headers})))
 
-(def site-auth "http://localhost:2021/_site/token")
+; (def site-auth "http://localhost:2021/_site/token")
 
-(def questionnaire-endpoint "http://localhost:2021/questionnaire/graphql")
+; (def questionnaire-endpoint "http://localhost:2021/questionnaire/graphql")
 
-(def remote-query "http://localhost:2021/questionnaire/query")
+; (def remote-query "http://localhost:2021/questionnaire/query")
 
-(def site-questionnaire
-  (init remote-query
-        questionnaire-endpoint
-        {:site-auth {:endpoint site-auth
-                     :username "admin"
-                     :pass "admin"}}))
+; (def site-questionnaire
+;   (init remote-query
+;         questionnaire-endpoint
+;         {:site-auth {:endpoint site-auth
+;                      :username "admin"
+;                      :pass "admin"}}))
+
+; (do (require '[blip.core :as core] :reload) (require '[blip.site :as site] :reload) (site/site-questionnaire "query-questionnaires"))
