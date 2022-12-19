@@ -71,7 +71,7 @@
   plus optional parameters like HTTP headers.
   Returns function which takes query/mutation name as a first and query-args as rest arguments
   and performs the graphql request when called."
-  [gql-queries {:keys [endpoint headers]}]
+  [gql-queries endpoint {:keys [headers]}]
   (fn [query-name & query-args]
     (let [query-val (get (load-queries gql-queries headers) query-name)
           query {:query (second query-val)}]
