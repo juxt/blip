@@ -66,17 +66,17 @@
 ;; Public API
 
 (defn init
-  "Higher-order function which is called with graphql resource handle as a first argument
+  "Higher-order function which is called with a graphql resource handle as a first argument
   (either local filename or remote URI) and map containing query `endpoint` for making requests,
-  and `post-headers`/`get-headers` maps.
+  plus optional parameters like HTTP headers.
   Returns function which takes query/mutation name as a first and query-args as rest arguments
   and performs the graphql request when called."
-  [file-name {:keys [endpoint post-headers get-headers]}]
+  [file-name {:keys [endpoint headers]}]
   (fn [query-name & query-args]
-    (let [query-val (get (load-queries file-name get-headers) query-name)
+    (let [query-val (get (load-queries file-name headers) query-name)
           query {:query (second query-val)}]
       (post-request endpoint
                     (cond-> query
                       query-args
                       (assoc :variables query-args))
-                    post-headers))))
+                    headers))))

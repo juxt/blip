@@ -1,6 +1,6 @@
 (ns blip.site
   #?(:cljs (:require-macros [cljs.core.async.macros :refer [go]]))
-  (:require [blip.core :as core]  
+  (:require [blip.core :as core]
             #?(:clj [cheshire.core :as cheshire])
             #?(:clj [clj-http.lite.client :as http])
             #?(:cljs [cljs-http.client :as http])
@@ -28,11 +28,9 @@
   Returns function which takes query/mutation name as a first and query-args as rest arguments
   and performs the graphql request when called."
   [file-name {:keys [endpoint site-auth]}]
-  (let [get-headers  {"Accept" "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
-                      "authorization" (str "Bearer " (get-site-token site-auth))}
-        post-headers {"Content-Type" "application/json"
-                      "authorization" (str "Bearer " (get-site-token site-auth))}]
-    (core/init file-name {:endpoint endpoint :post-headers post-headers :get-headers get-headers})))
+  (let [headers  {"Content-Type" "application/json"
+                  "authorization" (str "Bearer " (get-site-token site-auth))}]
+    (core/init file-name {:endpoint endpoint :headers headers})))
 
 (def site-auth "http://localhost:2021/_site/token")
 
