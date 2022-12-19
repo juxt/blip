@@ -12,10 +12,10 @@
 (defn type-name [head]
   ((juxt second last) (re-find #"^(query|mutation) (\w+)" head)))
 
-(defn get-request [url headers]
+(defn get-request [url & {:keys [headers]}]
   (http/get url {:headers headers}))
 
-(defn post-request [url body headers]
+(defn post-request [url body & {:keys [headers]}]
   (let [response (http/post
                   url
                   {:body #?(:clj (cheshire/generate-string body)
@@ -28,10 +28,14 @@
         (get "data"))))
 
 ;; TODO: something more robust to check whether filename is url location
-(defmulti get-query-definition (fn [file-name _] (if (string/starts-with? file-name "http") :remote :local)))
+(defmulti get-query-definition
+  (fn [file-name & _]
+    (if (string/starts-with? file-name "http")
+      :remote
+      :local)))
 
 #?(:clj (defmethod get-query-definition :local
-          [file-name _]
+          [file-name & _]
           (-> file-name io/reader line-seq)))
 
 #?(:cljs (defn node-slurp
@@ -40,19 +44,19 @@
              (.readFileSync file-stream file-path "utf8"))))
 
 #?(:cljs (defmethod get-query-definition :local
-           [file-name _]
+           [file-name & _]
            (-> file-name node-slurp string/split-lines)))
 
 (defmethod get-query-definition :remote
-  [file-name headers]
-  (-> file-name (get-request headers) :body string/split-lines))
+  [file-name & [opts]]
+  (-> file-name (get-request opts) :body string/split-lines))
 
 (defn load-queries
   "Given graphql resource handle and site-auth map, fetches graphql resource and returns map
   with string keys constructed from graphql query/mutation names prefixed by definition type
   (query or mutation) and values bound to full query/mutation definition as a string`"
-  [file-name headers]
-  (->> (get-query-definition file-name headers)
+  [file-name & [opts]]
+  (->> (get-query-definition file-name opts)
        (remove #(string/starts-with? % "#"))
        (remove empty?)
        (partition-by type-name)
@@ -71,12 +75,12 @@
   plus optional parameters like HTTP headers.
   Returns function which takes query/mutation name as a first and query-args as rest arguments
   and performs the graphql request when called."
-  [gql-queries endpoint & {:keys [headers]}]
+  [gql-queries endpoint & [opts]]
   (fn [query-name & query-args]
-    (let [query-val (get (load-queries gql-queries headers) query-name)
+    (let [query-val (get (load-queries gql-queries opts) query-name)
           query {:query (second query-val)}]
       (post-request endpoint
                     (cond-> query
                       query-args
                       (assoc :variables query-args))
-                    headers))))
+                    opts))))
