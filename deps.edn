@@ -4,7 +4,7 @@
         cheshire/cheshire {:mvn/version "5.10.2"}
         org.clj-commons/clj-http-lite {:mvn/version "1.0.13"}
         org.clojure/clojurescript {:mvn/version "1.10.773"}
-                      cljs-http/cljs-http {:mvn/version "0.1.46"}}
+        cljs-http/cljs-http {:mvn/version "0.1.46"}}
  :aliases
  {:build {:extra-paths ["src" "build"]
           :deps {io.github.seancorfield/build-clj
