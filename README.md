@@ -24,13 +24,11 @@ Use init function to get your actual query function and setup endpoint for makin
 (def graphql-request 
 	(blip/init 
 		"http://qeryedpoint/my-query.graphql" ;; can be a local filename or remote URI
-		{:endpoint "http://queryendpoint" ;; your query endpoint
-		 :post-headers {"Content-Type" ..} ;; "post headers to use in POST requests, eq actuall query/mutation requests"
-		 :get-headers {"Accept" "text/html, .."} ;; "get headers to use in GET requests, eq when fetching graphql schema from graphql server"
+		"http://queryendpoint" ;; your query endpoint
+		 {:headers {"Content-Type" ..
+	               "Accept" "text/html, .."} ;; "headers to use in requests, eq actuall query/mutation requests"
 		 })
 ```
-
-<sub>Note: you don't need to provide get headers when your endpont is a local file.</sub>
 
 ###### Execute query
 
@@ -38,10 +36,10 @@ Use init function to get your actual query function and setup endpoint for makin
 (graphql-request "query-name" {:id "some-id"}) 
 ```
 
-If you want to see list all query names and functions, you can simply call `blip/load-queries` with your resource handle and get-headers (in case graphql resource is hosted on remote server and it's not a local file).
+If you want to see list all query names and functions, you can simply call `blip/load-queries` with your resource handle and headers (in case graphql resource is hosted on remote server and it's not a local file).
 
 ```clj
-(blip/load queries "http://queryendpont/my-query.graphql" {"Accept" "text/html"})) ;; 
+(blip/load queries "http://queryendpont/my-query.graphql" {:headers {"Accept" "text/html"}})) ;; 
 ```
 
 
@@ -60,11 +58,11 @@ The `site/init` function takes graphql resource handle as a first argument and m
 ```clj
 (def graphql-request
  (blip-site/init
-	"http://qeryedpoint/my-query.graphql" ;; can be a local filename or remote URI"
-	{:endpont "http://queryendpoint" ;; your query endpoint
-	 :site-auth {:endpoint "http://siteendpoint/_site/token" ;; site endpoint to retrieve a token
-                 :username "username" }}))
-	             :pass "pass"
+	 "http://qeryedpoint/my-query.graphql" ;; can be a local filename or remote URI"
+	 "http://queryendpoint" ;; your query endpoint
+	 {:site-auth {:endpoint "http://siteendpoint/_site/token" ;; site endpoint to retrieve a token
+                  :username "username" }}))
+	              :pass "pass"
 ```
 
 ###### Execute query
