@@ -58,8 +58,8 @@ The `site/init` function takes graphql resource handle as a first argument and m
 ```clj
 (def graphql-request
  (blip-site/init
-	 "http://qeryedpoint/my-query.graphql" ;; can be a local filename or remote URI"
-	 "http://queryendpoint" ;; your query endpoint
+	 "http://queryedpoint/my-query.graphql" ;; can be a local filename or remote URI"
+	 "http://queryendpoint" ;; your graphql server endpoint
 	 {:site-auth {:endpoint "http://siteendpoint/_site/token" ;; site endpoint to retrieve a token
                   :username "username" }}))
 	              :pass "pass"
