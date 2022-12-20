@@ -23,8 +23,8 @@ Use init function to get your actual query function and setup endpoint for makin
 ```clj
 (def graphql-request 
 	(blip/init 
-		"http://qeryedpoint/my-query.graphql" ;; can be a local filename or remote URI
-		"http://queryendpoint" ;; your query endpoint
+		"http://queryedpoint/my-query.graphql" ;; can be a local filename or remote URI
+		"http://queryendpoint" ;; your graphql server endpoint
 		 {:headers {"Content-Type" ..
 	               "Accept" "text/html, .."} ;; "headers to use in requests, eq actuall query/mutation requests"
 		 })
