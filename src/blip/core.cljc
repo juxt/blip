@@ -79,8 +79,10 @@
   (fn [query-name & query-args]
     (let [query-val (get (load-queries gql-queries opts) query-name)
           query {:query (second query-val)}]
-      (post-request endpoint
-                    (cond-> query
-                      query-args
-                      (assoc :variables query-args))
-                    opts))))
+      (->> (post-request endpoint
+                         (cond-> query
+                           query-args
+                           (assoc :variables query-args))
+                         opts)
+           (cske/transform-keys csk/->kebab-case-keyword)
+           vals))))
