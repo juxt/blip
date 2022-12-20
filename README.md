@@ -1,36 +1,79 @@
 # blip
 
-Small library for fetching/injecting graphql definitions
+Small library for fetching graphql definitions and interactiong with graphql server.
 
-FIXME: my new library.
+# Installation
 
-Invoke a library API function from the command-line:
+Add the following dependency to your project.clj file
 
-    $ clojure -X blip/foo :a 1 :b '"two"'
-    {:a 1, :b "two"} "Hello, World!"
+# Usage
 
-Run the project's tests (they'll fail until you edit them):
+```clj
+(:require [blip.core :as core])
+```
 
-    $ clojure -T:build test
+###### Define init function
 
-Run the project's CI pipeline and build a JAR (this will fail until you edit the tests to pass):
+Use init function to get your actual query function and setup endpoint for making requests: 
 
-    $ clojure -T:build ci
+```clj
+(:require [blip.core :as blip])
+```
 
-This will produce an updated `pom.xml` file with synchronized dependencies inside the `META-INF`
-directory inside `target/classes` and the JAR in `target`. You can update the version (and SCM tag)
-information in generated `pom.xml` by updating `build.clj`.
+```clj
+(def graphql-request 
+	(blip/init 
+		"http://qeryedpoint/my-query.graphql" ;; can be a local filename or remote URI
+		{:endpoint "http://queryendpoint" ;; your query endpoint
+		 :post-headers {"Content-Type" ..} ;; "post headers to use in POST requests, eq actuall query/mutation requests"
+		 :get-headers {"Accept" "text/html, .."} ;; "get headers to use in GET requests, eq when fetching graphql schema from graphql server"
+		 })
+```
 
-Install it locally (requires the `ci` task be run first):
+<sub>Note: you don't need to provide get headers when your endpont is a local file.</sub>
 
-    $ clojure -T:build install
+###### Execute query
 
-Deploy it to Clojars -- needs `CLOJARS_USERNAME` and `CLOJARS_PASSWORD` environment
-variables (requires the `ci` task be run first):
+```clj
+(graphql-request "query-name" {:id "some-id"}) 
+```
 
-    $ clojure -T:build deploy
+If you want to see list all query names and functions, you can simply call `blip/load-queries` with your resource handle and get-headers (in case graphql resource is hosted on remote server and it's not a local file).
 
-Your library will be deployed to net.clojars.blip/blip on clojars.org by default.
+```clj
+(blip/load queries "http://queryendpont/my-query.graphql" {"Accept" "text/html"})) ;; 
+```
+
+
+## Site 
+
+If your graphql server is a [site](https://github.com/juxt/site), you can use 
+
+```clj
+(:require [blip.site :as blip-site])
+
+```
+###### Define init function
+
+The `site/init` function takes graphql resource handle as a first argument and map containing query endpoint for making requests, and site authorization map to specify site authorization.
+
+```clj
+(def graphql-request
+ (blip-site/init
+	"http://qeryedpoint/my-query.graphql" ;; can be a local filename or remote URI"
+	{:endpont "http://queryendpoint" ;; your query endpoint
+	 :site-auth {:endpoint "http://siteendpoint/_site/token" ;; site endpoint to retrieve a token
+                 :username "username" }}))
+	             :pass "pass"
+```
+
+###### Execute query
+
+```clj
+
+(graphql-request "query-name" {:id "some-id"}) 
+
+```
 
 ## License
 
