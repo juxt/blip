@@ -85,4 +85,5 @@
                            (assoc :variables query-args))
                          opts)
            (cske/transform-keys csk/->kebab-case-keyword)
-           vals))))
+           vals
+           first))))
