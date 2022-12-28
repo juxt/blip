@@ -13,14 +13,14 @@
   ((juxt second last) (re-find #"^(query|mutation) (\w+)" head)))
 
 (defn get-request [url & {:keys [headers]}]
-  (http/get url {:headers headers}))
+  (http/get url {:headers (if (delay? headers) @headers headers)}))
 
 (defn post-request [url body & {:keys [headers]}]
   (let [response (http/post
                   url
                   {:body #?(:clj (cheshire/generate-string body)
                             :cljs (.stringify js/JSON (clj->js body)))
-                   :headers headers})]
+                   :headers (if (delay? headers) @headers headers)})]
     (-> response
         :body
         #?(:clj cheshire/parse-string
@@ -69,6 +69,8 @@
 
 ;; Public API
 
+(def memoized-load-queries (memoize load-queries))
+
 (defn init
   "Higher-order function which is called with a graphql resource handle as a first argument
   (either local filename or remote URI) and map containing query `endpoint` for making requests,
@@ -77,12 +79,12 @@
   and performs the graphql request when called."
   [gql-queries endpoint & [opts]]
   (fn [query-name & query-args]
-    (let [query-val (get (load-queries gql-queries opts) query-name)
+    (let [query-val (get (memoized-load-queries gql-queries opts) query-name)
           query {:query (second query-val)}]
       (->> (post-request endpoint
                          (cond-> query
                            query-args
-                           (assoc :variables query-args))
+                           (assoc :variables (cske/transform-keys csk/->camelCaseKeyword query-args)))
                          opts)
            (cske/transform-keys csk/->kebab-case-keyword)
            vals
