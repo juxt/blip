@@ -13,7 +13,11 @@
   ((juxt second last) (re-find #"^(query|mutation) (\w+)" head)))
 
 (defn get-request [url & {:keys [headers]}]
-  (http/get url {:headers (if (delay? headers) @headers headers)}))
+  (let [accept {"Accept" "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"}]
+    (http/get
+     url
+     {:headers
+      (merge (if (delay? headers) @headers headers) accept)})))
 
 (defn post-request [url body & {:keys [headers]}]
   (let [response (http/post
