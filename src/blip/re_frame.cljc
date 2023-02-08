@@ -2,6 +2,7 @@
   (:require [ajax.core :as ajax]
             [clojure.string :as string]
             [blip.query-helper :as blip-qh]
+            [day8.re-frame.http-fx]
             #?(:cljs [goog.crypt.base64 :as b64])
             #?(:clj [cheshire.core :as cheshire]))
   #?(:clj (:import java.util.Base64)))
