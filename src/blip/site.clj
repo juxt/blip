@@ -8,7 +8,7 @@
   [{:keys [endpoint username pass] :or {username "admin" pass "admin"} :as site-auth}]
   (let [response (http/post
                   endpoint
-                  {:headers {"content-type" "application/x-wWw-form-urlencoded"}
+                  {:headers {"content-type" "application/x-www-form-urlencoded"}
                    :basic-auth [username pass]
                    :body "grant_type=client_credentials"})
         body (cheshire/parse-string (:body response))
