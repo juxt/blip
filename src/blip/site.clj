@@ -1,10 +1,7 @@
 (ns blip.site
-  #?(:cljs (:require-macros [cljs.core.async.macros :refer [go]]))
   (:require [blip.core :as core]
-            #?(:clj [cheshire.core :as cheshire])
-            #?(:clj [clj-http.lite.client :as http])
-            #?(:cljs [cljs-http.client :as http])
-            #?(:cljs [cljs.core.async :refer [<!]])))
+            [cheshire.core :as cheshire]
+            [clj-http.lite.client :as http]))
 
 (defn get-site-token
   "Retrieve the site token necessary to authorize all other interactions."
@@ -14,8 +11,7 @@
                   {:headers {"content-type" "application/x-www-form-urlencoded"}
                    :basic-auth [username pass]
                    :body "grant_type=client_credentials"})
-        body #?(:clj (cheshire/parse-string (:body response))
-                :cljs (js->clj (.parse js/JSON (:body response))))
+        body (cheshire/parse-string (:body response))
         access-token (get body "access_token")]
     access-token))
 
@@ -31,3 +27,5 @@
   (let [headers (delay {"Content-Type" "application/json"
                         "authorization" (str "Bearer " (get-site-token site-auth))})]
     (core/init gql-queries endpoint {:headers headers})))
+
+
