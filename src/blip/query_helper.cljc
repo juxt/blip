@@ -4,7 +4,7 @@
             [camel-snake-kebab.extras :as cske]))
 
 (defn- type-name [head]
-  ((juxt second last) (re-find #"^(query|mutation) (\w+)" head)))
+  ((juxt second last) (re-find #"^(query|mutation|fragment) (\w+)" head)))
 
 (defn process-query-definitions
   "Given graphql resource in form of a line sequence, returns map with string keys 
