@@ -1,12 +1,6 @@
-# Nyaya blip fork
+# Blip
 
 Small library for fetching graphql definitions and interactiong with graphql server.
-
-## Sync with upstream changes
-
-    git remote add upstream git@github.com:juxt/blip.git
-    git fetch upstream
-    git rebase upstream/main
 
 # Installation
 
@@ -40,6 +34,8 @@ Use init function to get your actual query function and setup endpoint for makin
 	               "Accept" "text/html, .."} ;; "headers to use in requests, eq actuall query/mutation requests"
 		 })
 ```
+
+You can also use the `:debug` option (set it to `true`) to see what queries Blip is ingesting.
 
 ###### Execute query
 

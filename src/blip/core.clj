@@ -54,5 +54,10 @@
   (fn [query-name & query-args]
     (let [query-val (get (memoized-load-queries gql-queries opts) query-name)
           query {:query (second query-val)}]
-      (-> (post-request endpoint (qh/prepare-query-body query query-args) opts)
-          qh/extract-query-result))))
+      (when (:debug opts) (println "[BLIP]" query))
+      (if (second query-val)
+        (-> (post-request endpoint (qh/prepare-query-body query query-args) opts)
+            qh/extract-query-result)
+        (throw
+         (ex-info (format "Requested query %s not found" query-name)
+                  {:query-name query-name}))))))
