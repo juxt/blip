@@ -3,6 +3,11 @@ fragment MissionFragment on Mission {
   name
 }
 
+fragment LandingFragment on Landing {
+  time
+  location
+}
+
 query capsule($capsuleId: ID!) {
   capsule(id: $capsuleId) {
     original_launch
@@ -21,7 +26,9 @@ mutation deleteUser($where: users_bool_exp!) {
 query capsules {
   capsules {
     id
-    landings
+    landings {
+      ...LandingFragment
+    }
     missions {
       ...MissionFragment
     }

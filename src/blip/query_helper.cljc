@@ -6,30 +6,35 @@
 (defn- type-name [head]
   ((juxt second last) (re-find #"^(query|mutation|fragment) (\w+)" head)))
 
+(defn- replace-all-fragments
+  [fragments-lookup [op-type op-body :as v]]
+  (let [fragment-name-regex #"\.\.\.([a-zA-Z0-9_]+)"
+        found-fragments (re-seq fragment-name-regex op-body)]
+    (if-let [fragment-names (->> found-fragments (map last) seq)]
+      [op-type
+       (reduce
+        (fn [body fragment-name]
+          (let [lookup-name (str "fragment-" (csk/->kebab-case-symbol fragment-name))
+                fragment-body (fragments-lookup lookup-name)
+                fragment-regex (re-pattern (str "\\.\\.\\." fragment-name))]
+            (string/replace body fragment-regex fragment-body)))
+        op-body fragment-names)]
+      v)))
+
 (defn inline-fragments
   "Search for fragment usage in queries or mutations
   and replace it with the corresponding fragment body."
   [definitions-map]
   (let [fragment-body-regex #"\{(.*)\}"
-        fragment-name-regex #"\.\.\.([a-zA-Z0-9_]+)"
         fragments-lookup (-> definitions-map
                              (update-vals
                               (fn [[op-type op-body :as v]]
                                 (if (= :fragment op-type)
                                   (last (re-find fragment-body-regex op-body))
                                   v))))]
-    (-> definitions-map
-        (update-vals
-         (fn [[op-type op-body :as v]]
-           (if (#{:query :mutation} op-type)
-             (if-let [fragment-name (last (re-find fragment-name-regex op-body))]
-               [op-type
-                (string/replace op-body
-                                fragment-name-regex
-                                (fragments-lookup
-                                 (str "fragment-" (csk/->kebab-case-symbol fragment-name))))]
-               v)
-             v))))))
+    (->> fragments-lookup
+         (partial replace-all-fragments)
+         (update-vals definitions-map))))
 
 (defn process-query-definitions
   "Given graphql resource in form of a line sequence, returns map with string keys
