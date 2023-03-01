@@ -1,4 +1,4 @@
-# blip
+# Blip
 
 Small library for fetching graphql definitions and interactiong with graphql server.
 
@@ -19,15 +19,15 @@ juxt/blip {:git/url "git@github.com:juxt/blip.git"
 
 ###### Define init function
 
-Use init function to get your actual query function and setup endpoint for making requests: 
+Use init function to get your actual query function and setup endpoint for making requests:
 
 ```clj
 (:require [blip.core :as blip])
 ```
 
 ```clj
-(def graphql-request 
-	(blip/init 
+(def graphql-request
+	(blip/init
 		"http://queryedpoint/my-query.graphql" ;; can be a local filename or remote URI
 		"http://queryendpoint" ;; your graphql server endpoint
 		 {:headers {"Content-Type" ..
@@ -35,22 +35,24 @@ Use init function to get your actual query function and setup endpoint for makin
 		 })
 ```
 
+You can also use the `:debug` option (set it to `true`) to see what queries Blip is ingesting.
+
 ###### Execute query
 
 ```clj
-(graphql-request "query-name" {:id "some-id"}) 
+(graphql-request "query-name" {:id "some-id"})
 ```
 
 If you want to see list all query names and functions, you can simply call `blip/load-queries` with your resource handle and headers (in case graphql resource is hosted on remote server and it's not a local file).
 
 ```clj
-(blip/load queries "http://queryendpont/my-query.graphql" {:headers {"Accept" "text/html"}})) ;; 
+(blip/load queries "http://queryendpont/my-query.graphql" {:headers {"Accept" "text/html"}})) ;;
 ```
 
 
-## Site 
+## Site
 
-If your graphql server is a [site](https://github.com/juxt/site), you can use 
+If your graphql server is a [site](https://github.com/juxt/site), you can use
 
 ```clj
 (:require [blip.site :as blip-site])
@@ -74,7 +76,7 @@ The `site/init` function takes graphql resource handle as a first argument and m
 
 ```clj
 
-(graphql-request "query-name" {:id "some-id"}) 
+(graphql-request "query-name" {:id "some-id"})
 
 ```
 

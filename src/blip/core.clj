@@ -52,7 +52,13 @@
   and performs the graphql request when called."
   [gql-queries endpoint & [opts]]
   (fn [query-name & query-args]
-    (let [query-val (get (memoized-load-queries gql-queries opts) query-name)
-          query {:query (second query-val)}]
-      (-> (post-request endpoint (qh/prepare-query-body query query-args) opts)
-          qh/extract-query-result))))
+    (let [[query-name query-body] (get (memoized-load-queries gql-queries opts) query-name)]
+      (when (:debug opts)
+        (println "[BLIP] retrieved query" {query-name query-body}))
+      (if query-body
+        (-> endpoint
+            (post-request (qh/prepare-query-body {:query query-body} query-args) opts)
+            qh/extract-query-result)
+        (throw
+         (ex-info (format "Requested query %s not found" query-name)
+                  {:query-name query-name}))))))
