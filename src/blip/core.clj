@@ -54,7 +54,7 @@
   (fn [query-name & query-args]
     (let [[query-name query-body] (get (memoized-load-queries gql-queries opts) query-name)]
       (when (:debug opts)
-        (println "[BLIP]" {:query query-body}))
+        (println "[BLIP] retrieved query" {query-name query-body}))
       (if query-body
         (-> endpoint
             (post-request (qh/prepare-query-body {:query query-body} query-args) opts)
