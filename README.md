@@ -7,9 +7,9 @@ Small library for fetching graphql definitions and interactiong with graphql ser
 Add the following dependency to your deps.edn file. 
 
 ```clj
-juxt/blip {:git/url "git@github.com:juxt/blip.git"
+juxt/blip {:git/url "git@github.com:nyayatech/blip.git"
 	   :git/tag "0.1"      ;; the tagged revision 
-	   :git/sha "c1c2bda"} ;; the short sha of the tagged revision
+	   :git/sha "ef9d809"} ;; the short sha of the tagged revision
 ```
 
 # Usage
