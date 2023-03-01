@@ -1,7 +1,9 @@
 (ns blip.core-test
-  (:require #?(:cljs [clojure.test :refer :all])
-            #?(:clj [clojure.test :refer :all])
-            [blip.core :as blip]))
+  (:require
+   #?(:cljs [clojure.test :refer :all])
+   #?(:clj [clojure.test :refer [deftest is]])
+   [clj-http.lite.client :as http]
+   [blip.core :as blip]))
 
 (deftest load-queries-test
   (is (=
@@ -22,3 +24,8 @@
         [:mutation
          "mutation insertUser($objects: [users_insert_input!]!) {  insert_users(objects: $objects) {    returning {      name      id      rocket      timestamp    }  }}"]}
        (blip/load-queries "test/blip/spacex.graphql" nil))))
+
+(deftest blipping-around-test
+  (with-redefs [http/post (constantly {:body "{\"data\": {\"query-name\": \"results\"}}"})]
+    (let [f (blip/init "test/blip/spacex.graphql" "")]
+      (is (= "results" (f "query-capsule"))))))
