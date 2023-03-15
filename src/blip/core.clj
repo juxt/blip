@@ -3,7 +3,8 @@
             [cheshire.core :as cheshire]
             [clojure.java.io :as io]
             [clj-http.lite.client :as http]
-            [blip.query-helper :as qh]))
+            [blip.query-helper :as qh]
+            [clojure.pprint :refer [pprint]]))
 
 ;; TODO: something more robust to check whether filename is url location
 (defmulti get-query-definition
@@ -21,7 +22,7 @@
 
 (defn post-request [url body & {:keys [headers debug]}]
   (when debug (println "[BLIP] request ----------"))
-  (when debug (clojure.pprint/pprint body))
+  (when debug (pprint body))
   (let [{:keys [body]} (http/post
                         url
                         {:body    (cheshire/generate-string body)
