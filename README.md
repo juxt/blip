@@ -4,11 +4,11 @@ Small library for fetching GraphQL definitions and interacting with a GraphQL se
 
 # Installation
 
-Add the following dependency to your deps.edn file. Please check if the tag release number is the latest:
+Add the following dependency to your deps.edn file.
 
 ```clj
 juxt/blip {:git/url "git@github.com:juxt/blip.git"
-	   :git/tag "0.1"} ;; the release tag number to use
+	   :git/sha "ab7c45d"}
 ```
 
 # Usage

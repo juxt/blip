@@ -3,7 +3,8 @@
             [cheshire.core :as cheshire]
             [clojure.java.io :as io]
             [clj-http.lite.client :as http]
-            [blip.query-helper :as qh]))
+            [blip.query-helper :as qh]
+            [clojure.pprint :refer [pprint]]))
 
 ;; TODO: something more robust to check whether filename is url location
 (defmulti get-query-definition
@@ -19,7 +20,9 @@
      {:headers
       (merge (if (delay? headers) @headers headers) accept)})))
 
-(defn post-request [url body & {:keys [headers]}]
+(defn post-request [url body & {:keys [headers debug]}]
+  (when debug (println "[BLIP] request ----------"))
+  (when debug (pprint body))
   (let [{:keys [body]} (http/post
                         url
                         {:body    (cheshire/generate-string body)
@@ -40,7 +43,10 @@
   "Given graphql resource handle and site-auth map, fetches graphql resource
   and calls `blip.query-helper/process-query-definitions` on it"
   [file-name & [opts]]
-  (-> file-name (get-query-definition opts) qh/process-query-definitions))
+  (let [queries (get-query-definition file-name opts)]
+    (when (:debug opts)
+      (println "[BLIP] getting query from" file-name "bytes" (count queries)))
+    (-> queries qh/process-query-definitions)))
 
 (def memoized-load-queries (memoize load-queries))
 
@@ -51,10 +57,9 @@
   Returns function which takes query/mutation name as a first and query-args as rest arguments
   and performs the graphql request when called."
   [gql-queries endpoint & [opts]]
-  (fn [query-name & query-args]
-    (let [[query-name query-body] (get (memoized-load-queries gql-queries opts) query-name)]
-      (when (:debug opts)
-        (println "[BLIP] retrieved query" {query-name query-body}))
+  (fn [query & [query-args]]
+    (let [[query-name query-body] (get (memoized-load-queries gql-queries opts) query)]
+      (when (:debug opts) (println "[BLIP] requested query" query))
       (if query-body
         (-> endpoint
             (post-request (qh/prepare-query-body {:query query-body} query-args) opts)
