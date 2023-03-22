@@ -1,6 +1,6 @@
 # Blip
 
-Small library for fetching graphql definitions and interactiong with graphql server.
+Small library for fetching GraphQL definitions and interacting with a GraphQL server.
 
 # Installation
 
