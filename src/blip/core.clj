@@ -14,7 +14,7 @@
       :remote
       :local)))
 
-(defn get-request [url & {:keys [headers] :as opts}]
+(defn get-request [url {:keys [headers] :as opts}]
   (logr/info opts)
   (let [accept {"Accept" "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"}]
     (http/get
@@ -22,7 +22,7 @@
      {:headers
       (merge (if (delay? headers) @headers headers) accept)})))
 
-(defn post-request [url body & {:keys [headers debug]}]
+(defn post-request [url body {:keys [headers debug]}]
   (when debug (println "[BLIP] request ----------"))
   (when debug (pprint body))
   (let [{:keys [body]} (http/post
@@ -58,7 +58,7 @@
   plus optional parameters like HTTP headers.
   Returns function which takes query/mutation name as a first and query-args as rest arguments
   and performs the graphql request when called."
-  [gql-queries endpoint & [opts]]
+  [gql-queries endpoint opts]
   (fn [query & [query-args]]
     (let [[query-name query-body] (get (memoized-load-queries gql-queries opts) query)]
       (when (:debug opts) (println "[BLIP] requested query" query))
