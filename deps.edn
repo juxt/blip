@@ -4,6 +4,7 @@
         cheshire/cheshire {:mvn/version "5.10.2"}
         org.clj-commons/clj-http-lite {:mvn/version "1.0.13"}
         org.clojure/clojurescript {:mvn/version "1.10.773"}
+        org.clojure/tools.logging {:mvn/version "1.2.4"}
         cljs-ajax/cljs-ajax {:mvn/version "0.8.4"}
         day8.re-frame/http-fx {:mvn/version "0.2.4"}}
  :aliases
