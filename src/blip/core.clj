@@ -2,6 +2,7 @@
   (:require [clojure.string :as string]
             [cheshire.core :as cheshire]
             [clojure.java.io :as io]
+            [clojure.tools.logging.readable]
             [clj-http.lite.client :as http]
             [blip.query-helper :as qh]
             [clojure.pprint :refer [pprint]]))
@@ -13,7 +14,8 @@
       :remote
       :local)))
 
-(defn get-request [url & {:keys [headers]}]
+(defn get-request [url & {:keys [headers] :as opts}]
+  (logr/info opts)
   (let [accept {"Accept" "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"}]
     (http/get
      url
