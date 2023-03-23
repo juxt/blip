@@ -2,7 +2,7 @@
   (:require [clojure.string :as string]
             [cheshire.core :as cheshire]
             [clojure.java.io :as io]
-            [clojure.tools.logging.readable]
+            [clojure.tools.logging.readable :as logr]
             [clj-http.lite.client :as http]
             [blip.query-helper :as qh]
             [clojure.pprint :refer [pprint]]))
